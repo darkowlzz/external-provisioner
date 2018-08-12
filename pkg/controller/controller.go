@@ -299,6 +299,11 @@ func (p *csiProvisioner) Provision(options controller.VolumeOptions) (*v1.Persis
 		return nil, err
 	}
 
+	// Inherit label data from PVC.
+	for k, v := range options.PVC.GetObjectMeta().GetLabels() {
+		options.Parameters[k] = v
+	}
+
 	capacity := options.PVC.Spec.Resources.Requests[v1.ResourceName(v1.ResourceStorage)]
 	volSizeBytes := capacity.Value()
 
